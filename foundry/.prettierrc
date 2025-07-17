@@ -1,0 +1,8 @@
+{
+    "plugins": ["prettier-plugin-solidity"],
+    "tabWidth": 4,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "printWidth": 250,
+    "singleQuote": false
+}
