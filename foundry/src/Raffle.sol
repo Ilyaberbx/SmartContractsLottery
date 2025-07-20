@@ -30,6 +30,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
     event RaffleEntered(address indexed player);
     event WinnerPicked(address indexed winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
     error Raffle__NotEnoughEthSent();
     error Raffle__TransferFailed();
     error Raffle_NotOpen();
@@ -67,9 +68,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
         s_lastTimeStamp = block.timestamp;
         emit WinnerPicked(recentWinner);
 
-        (bool sucess, ) = recentWinner.call{ value: address(this).balance }("");
+        (bool success, ) = recentWinner.call{ value: address(this).balance }("");
 
-        if (!sucess) {
+        if (!success) {
             revert Raffle__TransferFailed();
         }
     }
@@ -100,7 +101,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
             extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({ nativePayment: false }))
         });
 
-        s_vrfCoordinator.requestRandomWords(request);
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        emit RequestedRaffleWinner(requestId);
     }
 
     function getEntranceFee() external view returns (uint256) {
